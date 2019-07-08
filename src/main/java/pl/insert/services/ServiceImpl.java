@@ -17,4 +17,11 @@ public class ServiceImpl implements Service {
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
+
+    @Override
+    public String toString() {
+        return "ServiceImpl{" +
+                "userDao=" + userDao +
+                '}';
+    }
 }

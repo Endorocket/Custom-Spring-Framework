@@ -12,7 +12,7 @@ public class Configuration {
     @Bean(name = "mojaNazwa")
     public Service cosTamcosTam() {
 
-        System.out.println("pl.insert.config.Configuration: cosTamcosTam()");
+        System.out.println("Configuration: cosTamcosTam()");
 
         return new ServiceImpl();
     }
@@ -20,7 +20,7 @@ public class Configuration {
     @Bean(name="mojaInnaNazwa")
     public Service inneCosTamCosTam() {
 
-        System.out.println("pl.insert.config.Configuration: inneCosTamCosTam()");
+        System.out.println("Configuration: inneCosTamCosTam()");
 
         return new ServiceImpl();
     }

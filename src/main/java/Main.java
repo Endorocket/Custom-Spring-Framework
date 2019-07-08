@@ -9,9 +9,9 @@ public class Main {
 
         ApplicationContext context = new ApplicationContext(Configuration.class);
 
-        Service service = context.getBean("mojaInnaNazwa", ServiceImpl.class);
+        ServiceImpl service = context.getBean("mojaInnaNazwa", ServiceImpl.class);
 
-        System.out.println(service);
+        System.out.println(service.getUserDao());
 
     }
 }

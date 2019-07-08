@@ -31,31 +31,29 @@ public class ApplicationContext {
                         Constructor<?> constructor = configurationClazz.getConstructor();
                         Object instance = constructor.newInstance();
 
-                        Configuration configurationInstance = (Configuration) instance;
-
-
                         if (method.getReturnType().isAssignableFrom(clazz)) {
-                            R returnBean = (R) method.invoke(configurationInstance);
+                            R returnBean = (R) method.invoke(instance);
 
                             //////
 
+                            Field[] declaredFields = returnBean.getClass().getDeclaredFields();
 
-                            Method[] beanMethods = returnBean.getClass().getMethods();
-
-                            for (Method beanMethod : beanMethods) {
-                                if (beanMethod.getName().contains("set")) {
-                                    getFieldName(beanMethod);
-                                }
-                            }
-
-
-                            for (Field field : fields) {
-
+                            for (Field field : declaredFields) {
                                 if (field.isAnnotationPresent(Autowired.class)) {
+                                    field.setAccessible(true);
 
-                                    System.out.println(field.getType());
+                                    Class<?> fieldType = field.getType();
+                                    Constructor<?> fieldTypeConstructor = fieldType.getConstructor();
+                                    Object o = fieldTypeConstructor.newInstance();
+
+                                    field.set(returnBean, o);
+
+
+                                    System.out.println(field.getName());
+                                    System.out.println(field.getDeclaringClass());
                                 }
                             }
+
 
                             //////
 
@@ -76,13 +74,5 @@ public class ApplicationContext {
         }
 
         return null;
-    }
-
-    private String getFieldName(Method setterMethod) {
-        String substring = setterMethod.getName().substring(3);
-        String firstLetter = substring.substring(0, 1).toLowerCase();
-        String fieldName = firstLetter + substring.substring(1);
-
-        return fieldName;
     }
 }
