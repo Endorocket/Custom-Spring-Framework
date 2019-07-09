@@ -13,7 +13,6 @@ public class HibernateUtil {
     private static SessionFactory sessionFactory = null;
 
     static {
-
         try {
             loadSessionFactory();
         } catch (Exception e) {
