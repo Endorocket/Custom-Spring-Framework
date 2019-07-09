@@ -1,7 +1,8 @@
-package pl.insert.hibernate;
+package pl.insert.dao.execute_around_method_pattern;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import pl.insert.hibernate.HibernateUtil;
 
 public class TransactionTemplate {
 

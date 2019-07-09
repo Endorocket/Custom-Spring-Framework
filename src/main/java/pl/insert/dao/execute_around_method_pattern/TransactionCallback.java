@@ -1,4 +1,4 @@
-package pl.insert.hibernate;
+package pl.insert.dao.execute_around_method_pattern;
 
 import org.hibernate.Session;
 

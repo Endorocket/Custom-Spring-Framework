@@ -1,8 +1,6 @@
-package pl.insert.dao;
+package pl.insert.dao.execute_around_method_pattern;
 
 import org.hibernate.Query;
-import pl.insert.hibernate.TransactionCallback;
-import pl.insert.hibernate.TransactionTemplate;
 import pl.insert.model.Employee;
 
 import java.util.Date;
