@@ -2,6 +2,8 @@ package pl.insert.config;
 
 import pl.insert.annotations.Autowired;
 import pl.insert.annotations.Bean;
+import pl.insert.annotations.Qualifier;
+import pl.insert.exceptions.NoSuchBeanDefinitionException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -28,13 +30,12 @@ public class ApplicationContext {
                 if (beanAnnotation.name().equals(name)) {
 
                     try {
+
                         Constructor<?> constructor = configurationClazz.getConstructor();
                         Object instance = constructor.newInstance();
 
                         if (method.getReturnType().isAssignableFrom(clazz)) {
                             R returnBean = (R) method.invoke(instance);
-
-                            //////
 
                             Field[] declaredFields = returnBean.getClass().getDeclaredFields();
 
@@ -42,20 +43,13 @@ public class ApplicationContext {
                                 if (field.isAnnotationPresent(Autowired.class)) {
                                     field.setAccessible(true);
 
-                                    Class<?> fieldType = field.getType();
-                                    Constructor<?> fieldTypeConstructor = fieldType.getConstructor();
-                                    Object o = fieldTypeConstructor.newInstance();
-
-                                    field.set(returnBean, o);
-
-
-                                    System.out.println(field.getName());
-                                    System.out.println(field.getDeclaringClass());
+                                    if (field.isAnnotationPresent(Qualifier.class)) {
+                                        Qualifier qualifier = field.getAnnotation(Qualifier.class);
+                                        Object beanToInject = getBean(qualifier.name(), field.getType());
+                                        field.set(returnBean, beanToInject);
+                                    }
                                 }
                             }
-
-
-                            //////
 
                             return returnBean;
                         }
@@ -73,6 +67,6 @@ public class ApplicationContext {
             }
         }
 
-        return null;
+        throw new NoSuchBeanDefinitionException("There is no bean called: " + name);
     }
 }

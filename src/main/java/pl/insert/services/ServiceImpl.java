@@ -7,16 +7,8 @@ import pl.insert.dao.UserDao;
 public class ServiceImpl implements Service {
 
     @Autowired
-    @Qualifier(name="asdasd")
+    @Qualifier(name="myUserDao")
     private UserDao userDao;
-
-    public UserDao getUserDao() {
-        return userDao;
-    }
-
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
-    }
 
     @Override
     public String toString() {
