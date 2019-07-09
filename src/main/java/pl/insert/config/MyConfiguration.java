@@ -5,15 +5,15 @@ import pl.insert.dao.UserDao;
 import pl.insert.services.Service;
 import pl.insert.services.ServiceImpl;
 
-public class Configuration {
+public class MyConfiguration {
 
-    public Configuration() {
+    public MyConfiguration() {
     }
 
     @Bean(name = "mojaNazwa")
     public Service cosTamcosTam() {
 
-        System.out.println("Configuration: cosTamcosTam()");
+        System.out.println("MyConfiguration: cosTamcosTam()");
 
         return new ServiceImpl();
     }
@@ -21,7 +21,7 @@ public class Configuration {
     @Bean(name="mojaInnaNazwa")
     public Service inneCosTamCosTam() {
 
-        System.out.println("Configuration: inneCosTamCosTam()");
+        System.out.println("MyConfiguration: inneCosTamCosTam()");
 
         return new ServiceImpl();
     }
@@ -32,9 +32,3 @@ public class Configuration {
         return new UserDao();
     }
 }
-
-/*
-
-    Aspect
-
- */
