@@ -35,22 +35,10 @@ public class ApplicationContext {
                         Object instance = constructor.newInstance();
 
                         if (method.getReturnType().isAssignableFrom(clazz)) {
+
+                            //noinspection unchecked
                             R returnBean = (R) method.invoke(instance);
-
-                            Field[] declaredFields = returnBean.getClass().getDeclaredFields();
-
-                            for (Field field : declaredFields) {
-                                if (field.isAnnotationPresent(Autowired.class)) {
-                                    field.setAccessible(true);
-
-                                    if (field.isAnnotationPresent(Qualifier.class)) {
-                                        Qualifier qualifier = field.getAnnotation(Qualifier.class);
-                                        Object beanToInject = getBean(qualifier.name(), field.getType());
-                                        field.set(returnBean, beanToInject);
-                                    }
-                                }
-                            }
-
+                            injectFields(returnBean);
                             return returnBean;
                         }
 
@@ -68,5 +56,22 @@ public class ApplicationContext {
         }
 
         throw new NoSuchBeanDefinitionException("There is no bean called: " + name);
+    }
+
+    private <R> void injectFields(R sourceObject) throws IllegalAccessException {
+
+        Field[] declaredFields = sourceObject.getClass().getDeclaredFields();
+
+        for (Field field : declaredFields) {
+            if (field.isAnnotationPresent(Autowired.class)) {
+                field.setAccessible(true);
+
+                if (field.isAnnotationPresent(Qualifier.class)) {
+                    Qualifier qualifier = field.getAnnotation(Qualifier.class);
+                    Object beanToInject = getBean(qualifier.name(), field.getType());
+                    field.set(sourceObject, beanToInject);
+                }
+            }
+        }
     }
 }
