@@ -2,70 +2,44 @@ package pl.insert.dao.proxy_pattern;
 
 import pl.insert.model.Employee;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 public class EmployeesDao implements IEmployeesDao {
 
     public List<Employee> getEmployeeList() {
 
-        String queryStr = "select emp from Employee emp";
+        EntityManager entityManager = EntityManagerHolder.getEntityManager();
 
-//        System.out.println(HibernateUtil.getSessionFactory().getCurrentSession());
-
-//        Query query = HibernateUtil.getSessionFactory().getCurrentSession().createQuery(queryStr);
-
-//        return query.list();
-
-        return null;
+        //noinspection unchecked
+        return (List<Employee>) entityManager.createQuery("SELECT e FROM Employee e").getResultList();
     }
 
     @Override
     public Employee getEmployeeById(Long empId) {
-        return null;
+
+        EntityManager entityManager = EntityManagerHolder.getEntityManager();
+
+        return entityManager.find(Employee.class, empId);
     }
 
     @Override
     public void insertEmployee(Employee emp) {
 
+        EntityManager entityManager = EntityManagerHolder.getEntityManager();
+
+        entityManager.persist(emp);
     }
 
     @Override
     public void deleteEmployee(Long empId) {
 
-    }
+        EntityManager entityManager = EntityManagerHolder.getEntityManager();
 
-    public static void main(String a[]) {
+        Employee employee = entityManager.find(Employee.class, empId);
 
-        IEmployeesDao empDao = new ProxyEmployeesDao();
-
-//        Employee emp = new Employee();
-//        emp.setName("Matthew");
-//        emp.setDepartment("Kovalsky");
-//        emp.setJoinedOn(new Date());
-//        emp.setSalary(5250L);
-//        empDao.insertEmployee(emp);
-//
-//        System.out.println("---------------------------");
-
-        List<Employee> empList = empDao.getEmployeeList();
-        System.out.println("emp size: " + empList.size());
-        empList.forEach(System.out::println);
-//
-//        System.out.println("---------------------------");
-//
-//        Employee employee = empDao.getEmployeeById((long) 1);
-//        System.out.println(employee);
-
+        if (employee != null) {
+            entityManager.remove(employee);
+        }
     }
 }
-/*
-
-treetlocalstorage
-pamięc lokalna wątku
-entitymanager w proxy go dajemy tam a w real subject otrzymujemy go
-w springu tego jest pełno
-testy na wielu wątkach
-zmienna statyczna get i jeszcze jedna metoda
-
-w treedlocalstorage ważne by wyczyścić pamięc jak nie jest to potrzebne w finally threadlocal.remove()
- */

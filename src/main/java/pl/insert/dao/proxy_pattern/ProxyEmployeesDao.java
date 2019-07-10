@@ -10,18 +10,29 @@ import java.util.List;
 
 public class ProxyEmployeesDao implements IEmployeesDao {
 
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("pl.insert.example");
-
+    private EntityManagerFactory emf;
     private EmployeesDao employeesDao;
 
     public ProxyEmployeesDao() {
+        emf = Persistence.createEntityManagerFactory("pl.insert.example");
         employeesDao = new EmployeesDao();
     }
 
     @Override
     public List<Employee> getEmployeeList() {
 
-        List<Employee> employeeList = getEntityManager().createQuery("select emp from Employee emp").getResultList();
+        EntityManager entityManager = getEntityManager();
+        ThreadLocal<EntityManager> threadLocal = EntityManagerHolder.getThreadLocal();
+
+        List<Employee> employeeList;
+
+        try {
+            threadLocal.set(entityManager);
+            employeeList = employeesDao.getEmployeeList();
+
+        } finally {
+            threadLocal.remove();
+        }
 
         return employeeList;
     }
@@ -30,7 +41,18 @@ public class ProxyEmployeesDao implements IEmployeesDao {
     public Employee getEmployeeById(Long empId) {
 
         EntityManager entityManager = getEntityManager();
-        Employee employee = getEntityManager().find(Employee.class, empId);
+        ThreadLocal<EntityManager> threadLocal = EntityManagerHolder.getThreadLocal();
+
+        Employee employee;
+
+        try {
+            threadLocal.set(entityManager);
+            employee = employeesDao.getEmployeeById(empId);
+
+        } finally {
+            threadLocal.remove();
+        }
+
         entityManager.detach(employee);
 
         return employee;
@@ -41,9 +63,18 @@ public class ProxyEmployeesDao implements IEmployeesDao {
 
         EntityManager entityManager = getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
+        ThreadLocal<EntityManager> threadLocal = EntityManagerHolder.getThreadLocal();
 
         transaction.begin();
-        entityManager.persist(emp);
+
+        try {
+            threadLocal.set(entityManager);
+            employeesDao.insertEmployee(emp);
+
+        } finally {
+            threadLocal.remove();
+        }
+
         transaction.commit();
     }
 
@@ -52,16 +83,22 @@ public class ProxyEmployeesDao implements IEmployeesDao {
 
         EntityManager entityManager = getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
+        ThreadLocal<EntityManager> threadLocal = EntityManagerHolder.getThreadLocal();
 
         transaction.begin();
 
-        Employee employee = entityManager.find(Employee.class, empId);
-        entityManager.remove(employee);
+        try {
+            threadLocal.set(entityManager);
+            employeesDao.deleteEmployee(empId);
+
+        } finally {
+            threadLocal.remove();
+        }
 
         transaction.commit();
     }
 
-    public  EntityManager getEntityManager() {
+    private EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
 }

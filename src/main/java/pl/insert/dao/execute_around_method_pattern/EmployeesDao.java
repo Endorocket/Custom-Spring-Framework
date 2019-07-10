@@ -1,6 +1,6 @@
 package pl.insert.dao.execute_around_method_pattern;
 
-import org.hibernate.Query;
+import javax.persistence.Query;
 import pl.insert.model.Employee;
 
 import java.util.Date;
@@ -16,7 +16,7 @@ public class EmployeesDao {
 
             String queryStr = "select emp from Employee emp";
             Query query = session.createQuery(queryStr);
-            return query.list();
+            return query.getResultList();
         });
     }
 
