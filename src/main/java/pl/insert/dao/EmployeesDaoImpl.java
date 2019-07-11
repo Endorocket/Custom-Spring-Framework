@@ -16,7 +16,6 @@ public class EmployeesDaoImpl implements EmployeesDao {
         return (List<Employee>) entityManager.createQuery("SELECT e FROM Employee e").getResultList();
     }
 
-//    @Transactional
     @Override
     public Employee getEmployeeById(Long empId) {
 
