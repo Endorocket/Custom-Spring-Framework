@@ -1,4 +1,4 @@
-package pl.insert.exceptions;
+package pl.insert.spring.exceptions;
 
 public class NoSuchBeanDefinitionException extends RuntimeException {
 

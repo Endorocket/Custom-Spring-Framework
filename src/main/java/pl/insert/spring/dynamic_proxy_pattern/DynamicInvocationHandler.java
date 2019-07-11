@@ -1,10 +1,13 @@
-package pl.insert.dao.dynamic_proxy_pattern;
+package pl.insert.spring.dynamic_proxy_pattern;
+
+import pl.insert.spring.annotations.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,35 +36,49 @@ public class DynamicInvocationHandler implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
         EntityManager entityManager = getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-
-        ThreadLocal<EntityManager> threadLocal = EntityManagerHolder.getThreadLocal();
 
         Object result;
 
-        transaction.begin();
+        Method implMethod = methods.get(method.getName());
 
-//        method.isAnnotationPresent()
+        if (implMethod.isAnnotationPresent(Transactional.class) || method.isAnnotationPresent(Transactional.class)) {
+
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            result = invokeMethod(implMethod, args, entityManager);
+
+            if (transaction.isActive()) {
+                transaction.commit();
+            }
+
+            logger.info("Invoked method: " + method.getName() + " in transactional mode.");
+
+        } else {
+            result = invokeMethod(implMethod, args, entityManager);
+
+            logger.info("Invoked method: " + method.getName());
+        }
+
+        return result;
+    }
+
+    private Object invokeMethod(Method implMethod, Object[] args, EntityManager entityManager) throws IllegalAccessException, InvocationTargetException {
+
+        ThreadLocal<EntityManager> threadLocal = EntityManagerHolder.getThreadLocal();
+        Object result;
 
         try {
             threadLocal.set(entityManager);
-            result = methods.get(method.getName()).invoke(target, args);
+            result = implMethod.invoke(target, args);
 
         } finally {
             threadLocal.remove();
         }
-
-        if (transaction.isActive()) {
-            transaction.commit();
-        }
-
-        logger.info("Invoked method: " + method.getName());
-
         return result;
     }
 
     private EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
-
 }

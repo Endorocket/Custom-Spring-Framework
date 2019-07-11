@@ -1,34 +1,27 @@
 package pl.insert.config;
 
-import pl.insert.annotations.Bean;
-import pl.insert.dao.UserDao;
-import pl.insert.services.Service;
-import pl.insert.services.ServiceImpl;
+import pl.insert.dao.EmployeesDao;
+import pl.insert.dao.EmployeesDaoImpl;
+import pl.insert.services.EmployeeService;
+import pl.insert.services.EmployeeServiceImpl;
+import pl.insert.spring.annotations.Bean;
 
 public class MyConfiguration {
 
     public MyConfiguration() {
     }
 
-    @Bean(name = "mojaNazwa")
-    public Service cosTamcosTam() {
+    @Bean(name = "employeeService")
+    public EmployeeService employeeService() {
 
         System.out.println("MyConfiguration: cosTamcosTam()");
 
-        return new ServiceImpl();
+        return new EmployeeServiceImpl();
     }
 
-    @Bean(name="mojaInnaNazwa")
-    public Service inneCosTamCosTam() {
+    @Bean(name="employeesDao")
+    public EmployeesDao employeesDao() {
 
-        System.out.println("MyConfiguration: inneCosTamCosTam()");
-
-        return new ServiceImpl();
-    }
-
-    @Bean(name="myUserDao")
-    public UserDao userDao() {
-
-        return new UserDao();
+        return new EmployeesDaoImpl();
     }
 }

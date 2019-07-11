@@ -1,6 +1,7 @@
 package pl.insert.dao;
 
-import pl.insert.dao.dynamic_proxy_pattern.EntityManagerHolder;
+import pl.insert.spring.annotations.Transactional;
+import pl.insert.spring.dynamic_proxy_pattern.EntityManagerHolder;
 import pl.insert.model.Employee;
 
 import javax.persistence.EntityManager;
@@ -24,6 +25,7 @@ public class EmployeesDaoImpl implements EmployeesDao {
         return entityManager.find(Employee.class, empId);
     }
 
+    @Transactional
     @Override
     public void insertEmployee(Employee emp) {
 
@@ -32,6 +34,7 @@ public class EmployeesDaoImpl implements EmployeesDao {
         entityManager.persist(emp);
     }
 
+    @Transactional
     @Override
     public void deleteEmployee(Long empId) {
 
@@ -42,5 +45,10 @@ public class EmployeesDaoImpl implements EmployeesDao {
         if (employee != null) {
             entityManager.remove(employee);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "EmployeesDaoImpl{}";
     }
 }

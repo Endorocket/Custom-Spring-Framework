@@ -1,4 +1,4 @@
-package pl.insert.annotations;
+package pl.insert.spring.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

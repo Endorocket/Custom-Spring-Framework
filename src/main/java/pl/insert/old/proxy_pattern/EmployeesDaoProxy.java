@@ -2,7 +2,7 @@ package pl.insert.old.proxy_pattern;
 
 import pl.insert.dao.EmployeesDao;
 import pl.insert.dao.EmployeesDaoImpl;
-import pl.insert.dao.dynamic_proxy_pattern.EntityManagerHolder;
+import pl.insert.spring.dynamic_proxy_pattern.EntityManagerHolder;
 import pl.insert.model.Employee;
 
 import javax.persistence.EntityManager;

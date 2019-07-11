@@ -1,9 +1,11 @@
-package pl.insert.config;
+package pl.insert.spring.context;
 
-import pl.insert.annotations.Autowired;
-import pl.insert.annotations.Bean;
-import pl.insert.annotations.Qualifier;
-import pl.insert.exceptions.NoSuchBeanDefinitionException;
+import pl.insert.spring.annotations.Autowired;
+import pl.insert.spring.annotations.Bean;
+import pl.insert.spring.annotations.Qualifier;
+import pl.insert.spring.annotations.Transactional;
+import pl.insert.spring.dynamic_proxy_pattern.BeanFactory;
+import pl.insert.spring.exceptions.NoSuchBeanDefinitionException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -31,13 +33,14 @@ public class ApplicationContext {
 
                     try {
                         Constructor<?> constructor = configurationClazz.getConstructor();
-                        Object instance = constructor.newInstance();
+                        Object configuration = constructor.newInstance();
 
                         if (method.getReturnType().isAssignableFrom(clazz)) {
 
-                            //noinspection unchecked
-                            R returnBean = (R) method.invoke(instance);
+                            R returnBean = createInstance(method, clazz, configuration);
+
                             injectFields(returnBean);
+
                             return returnBean;
                         }
                     } catch (NoSuchMethodException e) {
@@ -54,6 +57,33 @@ public class ApplicationContext {
         }
 
         throw new NoSuchBeanDefinitionException("There is no bean called: " + name);
+    }
+
+    private <R> R createInstance(Method creationMethod, Class<R> clazz, Object configuration) throws IllegalAccessException, InvocationTargetException {
+
+        R returnObjectWithoutProxy = (R) creationMethod.invoke(configuration);
+
+        boolean transactionalImpl = checkTransactional(returnObjectWithoutProxy.getClass());
+
+        if (transactionalImpl) {
+
+            return BeanFactory.newInstance(returnObjectWithoutProxy, clazz);
+        }
+
+        return returnObjectWithoutProxy;
+    }
+
+    private boolean checkTransactional(Class<?> clazz) {
+
+        Method[] methods = clazz.getMethods();
+
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(Transactional.class)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private <R> void injectFields(R sourceObject) throws IllegalAccessException {

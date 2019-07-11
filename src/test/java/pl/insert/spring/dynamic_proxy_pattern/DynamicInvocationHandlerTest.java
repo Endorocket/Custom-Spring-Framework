@@ -1,10 +1,12 @@
-package pl.insert.dao.dynamic_proxy_pattern;
+package pl.insert.spring.dynamic_proxy_pattern;
 
 import org.junit.Before;
 import org.junit.Test;
+import pl.insert.config.MyConfiguration;
 import pl.insert.dao.EmployeesDao;
 import pl.insert.dao.EmployeesDaoImpl;
 import pl.insert.model.Employee;
+import pl.insert.spring.context.ApplicationContext;
 
 import java.util.Date;
 import java.util.List;
@@ -15,7 +17,9 @@ public class DynamicInvocationHandlerTest {
 
     @Before
     public void setUp() {
-        employeesDao = (EmployeesDao) ProxyFactory.newInstance(new EmployeesDaoImpl());
+        ApplicationContext context = new ApplicationContext(MyConfiguration.class);
+
+        employeesDao = context.getBean("employeesDao", EmployeesDao.class);
     }
 
     @Test
@@ -52,7 +56,7 @@ public class DynamicInvocationHandlerTest {
     @Test
     public void testDeleteEmployee() {
 
-        employeesDao.deleteEmployee(11L);
+        employeesDao.deleteEmployee(23L);
     }
 
     @Test

@@ -2,7 +2,9 @@ package pl.insert.config;
 
 import org.junit.Before;
 import org.junit.Test;
-import pl.insert.services.Service;
+import pl.insert.dao.EmployeesDao;
+import pl.insert.services.EmployeeService;
+import pl.insert.spring.context.ApplicationContext;
 
 import static org.junit.Assert.*;
 
@@ -16,12 +18,22 @@ public class ApplicationContextTest {
     }
 
     @Test
-    public void getBeanTest() {
+    public void getEmployeeServiceBean() {
 
-        Service actualService = context.getBean("mojaNazwa", Service.class);
+        EmployeeService actualEmployeeService = context.getBean("employeeService", EmployeeService.class);
 
-        System.out.println(actualService);
+        System.out.println(actualEmployeeService);
 
-        assertNotNull(actualService);
+        assertNotNull(actualEmployeeService);
+    }
+
+    @Test
+    public void getEmployeeDaoBean() {
+
+        EmployeesDao employeesDao = context.getBean("employeesDao", EmployeesDao.class);
+
+        System.out.println(employeesDao);
+
+        assertNotNull(employeesDao);
     }
 }
