@@ -1,4 +1,4 @@
-package pl.insert.dao.execute_around_method_pattern;
+package pl.insert.old.execute_around_method_pattern;
 
 import javax.persistence.Query;
 import pl.insert.model.Employee;

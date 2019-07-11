@@ -1,11 +1,12 @@
-package pl.insert.dao.proxy_pattern;
+package pl.insert.dao;
 
+import pl.insert.dao.dynamic_proxy_pattern.EntityManagerHolder;
 import pl.insert.model.Employee;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
-public class EmployeesDao implements IEmployeesDao {
+public class EmployeesDaoImpl implements EmployeesDao {
 
     public List<Employee> getEmployeeList() {
 
@@ -15,6 +16,7 @@ public class EmployeesDao implements IEmployeesDao {
         return (List<Employee>) entityManager.createQuery("SELECT e FROM Employee e").getResultList();
     }
 
+//    @Transactional
     @Override
     public Employee getEmployeeById(Long empId) {
 

@@ -1,5 +1,8 @@
-package pl.insert.dao.proxy_pattern;
+package pl.insert.old.proxy_pattern;
 
+import pl.insert.dao.EmployeesDao;
+import pl.insert.dao.EmployeesDaoImpl;
+import pl.insert.dao.dynamic_proxy_pattern.EntityManagerHolder;
 import pl.insert.model.Employee;
 
 import javax.persistence.EntityManager;
@@ -8,14 +11,14 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.List;
 
-public class ProxyEmployeesDao implements IEmployeesDao {
+public class EmployeesDaoProxy implements EmployeesDao {
 
     private EntityManagerFactory emf;
-    private EmployeesDao employeesDao;
+    private EmployeesDaoImpl employeesDaoImpl;
 
-    public ProxyEmployeesDao() {
+    public EmployeesDaoProxy() {
         emf = Persistence.createEntityManagerFactory("pl.insert.example");
-        employeesDao = new EmployeesDao();
+        employeesDaoImpl = new EmployeesDaoImpl();
     }
 
     @Override
@@ -28,7 +31,7 @@ public class ProxyEmployeesDao implements IEmployeesDao {
 
         try {
             threadLocal.set(entityManager);
-            employeeList = employeesDao.getEmployeeList();
+            employeeList = employeesDaoImpl.getEmployeeList();
 
         } finally {
             threadLocal.remove();
@@ -47,7 +50,7 @@ public class ProxyEmployeesDao implements IEmployeesDao {
 
         try {
             threadLocal.set(entityManager);
-            employee = employeesDao.getEmployeeById(empId);
+            employee = employeesDaoImpl.getEmployeeById(empId);
 
         } finally {
             threadLocal.remove();
@@ -69,7 +72,7 @@ public class ProxyEmployeesDao implements IEmployeesDao {
 
         try {
             threadLocal.set(entityManager);
-            employeesDao.insertEmployee(emp);
+            employeesDaoImpl.insertEmployee(emp);
 
         } finally {
             threadLocal.remove();
@@ -89,7 +92,7 @@ public class ProxyEmployeesDao implements IEmployeesDao {
 
         try {
             threadLocal.set(entityManager);
-            employeesDao.deleteEmployee(empId);
+            employeesDaoImpl.deleteEmployee(empId);
 
         } finally {
             threadLocal.remove();

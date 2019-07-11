@@ -1,4 +1,4 @@
-package pl.insert.hibernate;
+package pl.insert.old.hibernate;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -24,7 +24,7 @@ public class HibernateUtil {
     public static void loadSessionFactory() {
 
         Configuration configuration = new Configuration();
-        configuration.configure("/j2n-hibernate.cfg.xml");
+        configuration.configure("/old/j2n-hibernate.cfg.xml");
         configuration.addAnnotatedClass(Employee.class);
         ServiceRegistry srvcReg = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
         sessionFactory = configuration.buildSessionFactory(srvcReg);

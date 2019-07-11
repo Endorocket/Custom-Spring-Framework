@@ -30,7 +30,6 @@ public class ApplicationContext {
                 if (beanAnnotation.name().equals(name)) {
 
                     try {
-
                         Constructor<?> constructor = configurationClazz.getConstructor();
                         Object instance = constructor.newInstance();
 
@@ -41,7 +40,6 @@ public class ApplicationContext {
                             injectFields(returnBean);
                             return returnBean;
                         }
-
                     } catch (NoSuchMethodException e) {
                         e.printStackTrace();
                     } catch (IllegalAccessException e) {

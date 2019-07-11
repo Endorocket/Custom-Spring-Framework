@@ -1,10 +1,10 @@
-package pl.insert.dao.proxy_pattern;
+package pl.insert.dao;
 
 import pl.insert.model.Employee;
 
 import java.util.List;
 
-public interface IEmployeesDao {
+public interface EmployeesDao {
 
     List<Employee> getEmployeeList();
 

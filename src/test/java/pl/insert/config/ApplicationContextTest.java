@@ -8,8 +8,6 @@ import static org.junit.Assert.*;
 
 public class ApplicationContextTest {
 
-    private MyConfiguration configuration;
-
     private ApplicationContext context;
 
     @Before
@@ -19,7 +17,10 @@ public class ApplicationContextTest {
 
     @Test
     public void getBeanTest() {
+
         Service actualService = context.getBean("mojaNazwa", Service.class);
+
+        System.out.println(actualService);
 
         assertNotNull(actualService);
     }
