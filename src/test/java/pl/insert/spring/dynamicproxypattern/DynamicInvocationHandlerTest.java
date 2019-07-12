@@ -12,6 +12,10 @@ import java.util.List;
 
 public class DynamicInvocationHandlerTest {
 
+    // ALL TESTS WON'T WORK!!!
+    // EmployeeDao method needs to be invoked by EmployeeService
+    // or @Transactional annotation
+
     private EmployeeDao employeeDao;
 
     @Before
@@ -55,7 +59,7 @@ public class DynamicInvocationHandlerTest {
     @Test
     public void testDeleteEmployee() {
 
-        employeeDao.deleteEmployee(25L);
+        employeeDao.deleteEmployee(12L);
     }
 
     @Test

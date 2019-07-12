@@ -25,14 +25,14 @@ public class EmployeeDaoImpl implements EmployeeDao {
         return entityManager.find(Employee.class, empId);
     }
 
-    @Transactional
+//    @Transactional
     @Override
     public void insertEmployee(Employee emp) {
 
         entityManager.persist(emp);
     }
 
-    @Transactional
+//    @Transactional
     @Override
     public void deleteEmployee(Long empId) {
 

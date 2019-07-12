@@ -23,6 +23,8 @@ public class ApplicationContext {
 
     public <R> R getBean(String name, Class<R> clazz) {
 
+        logger.info("getBean: invoked, name: " + name);
+
         Method[] methods = configurationClazz.getMethods();
 
         for (Method method : methods) {
@@ -38,11 +40,7 @@ public class ApplicationContext {
 
                         if (method.getReturnType().isAssignableFrom(clazz)) {
 
-                            R returnBean = createInstance(method, clazz, configuration);
-
-                            injectFields(returnBean);
-
-                            return returnBean;
+                            return createInstance(method, clazz, configuration);
                         }
                     } catch (NoSuchMethodException e) {
                         e.printStackTrace();
@@ -62,20 +60,31 @@ public class ApplicationContext {
 
     private <R> R createInstance(Method creationMethod, Class<R> clazz, Object configuration) throws IllegalAccessException, InvocationTargetException {
 
+        logger.info("createInstance: invoked");
+
         R returnObject = (R) creationMethod.invoke(configuration);
 
         injectEntityManagerProxyIfNeeded(returnObject);
 
+        injectFields(returnObject);
+
         boolean transactionalImpl = checkTransactional(returnObject.getClass());
 
         if (transactionalImpl) {
+
+            logger.info("returning proxy");
+
             return BeanFactory.newInstance(returnObject, clazz);
         }
+
+        logger.info("returning NOT proxy");
 
         return returnObject;
     }
 
     private boolean checkTransactional(Class<?> clazz) {
+
+        logger.info("checkTransactional: invoked");
 
         Method[] methods = clazz.getMethods();
 
@@ -88,6 +97,8 @@ public class ApplicationContext {
     }
 
     private void injectFields(Object sourceObject) throws IllegalAccessException {
+
+        logger.info("injectFields: invoked");
 
         Field[] declaredFields = sourceObject.getClass().getDeclaredFields();
 
@@ -105,6 +116,9 @@ public class ApplicationContext {
     }
 
     private void injectEntityManagerProxyIfNeeded(Object sourceObject) throws IllegalAccessException {
+
+        logger.info("injectEntityManagerIfNeeded: invoked");
+
         Field[] declaredFields = sourceObject.getClass().getDeclaredFields();
 
         for (Field field : declaredFields) {
