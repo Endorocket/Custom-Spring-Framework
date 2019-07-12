@@ -1,18 +1,19 @@
 package pl.insert.spring.context;
 
-import pl.insert.spring.annotations.Autowired;
-import pl.insert.spring.annotations.Bean;
-import pl.insert.spring.annotations.Qualifier;
-import pl.insert.spring.annotations.Transactional;
-import pl.insert.spring.dynamic_proxy_pattern.BeanFactory;
+import pl.insert.spring.annotations.*;
+import pl.insert.spring.dynamicproxypattern.BeanFactory;
 import pl.insert.spring.exceptions.NoSuchBeanDefinitionException;
 
+import javax.persistence.EntityManager;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
 public class ApplicationContext {
+
+    private Logger logger = Logger.getLogger(ApplicationContext.class.getName());
 
     private Class<?> configurationClazz;
 
@@ -61,16 +62,17 @@ public class ApplicationContext {
 
     private <R> R createInstance(Method creationMethod, Class<R> clazz, Object configuration) throws IllegalAccessException, InvocationTargetException {
 
-        R returnObjectWithoutProxy = (R) creationMethod.invoke(configuration);
+        R returnObject = (R) creationMethod.invoke(configuration);
 
-        boolean transactionalImpl = checkTransactional(returnObjectWithoutProxy.getClass());
+        injectEntityManagerProxyIfNeeded(returnObject);
+
+        boolean transactionalImpl = checkTransactional(returnObject.getClass());
 
         if (transactionalImpl) {
-
-            return BeanFactory.newInstance(returnObjectWithoutProxy, clazz);
+            return BeanFactory.newInstance(returnObject, clazz);
         }
 
-        return returnObjectWithoutProxy;
+        return returnObject;
     }
 
     private boolean checkTransactional(Class<?> clazz) {
@@ -82,11 +84,10 @@ public class ApplicationContext {
                 return true;
             }
         }
-
         return false;
     }
 
-    private <R> void injectFields(R sourceObject) throws IllegalAccessException {
+    private void injectFields(Object sourceObject) throws IllegalAccessException {
 
         Field[] declaredFields = sourceObject.getClass().getDeclaredFields();
 
@@ -99,6 +100,32 @@ public class ApplicationContext {
                     Object beanToInject = getBean(qualifier.name(), field.getType());
                     field.set(sourceObject, beanToInject);
                 }
+            }
+        }
+    }
+
+    private void injectEntityManagerProxyIfNeeded(Object sourceObject) throws IllegalAccessException {
+        Field[] declaredFields = sourceObject.getClass().getDeclaredFields();
+
+        for (Field field : declaredFields) {
+
+            if (field.isAnnotationPresent(PersistenceContext.class)
+                    && field.getType().isAssignableFrom(EntityManager.class)) {
+
+                String beanName;
+
+                if (field.isAnnotationPresent(Qualifier.class)) {
+                    beanName = field.getAnnotation(Qualifier.class).name();
+                } else {
+                    beanName = "entityManager";
+                }
+
+                field.setAccessible(true);
+
+                EntityManager entityManager = getBean(beanName, EntityManager.class);
+                field.set(sourceObject, entityManager);
+
+                logger.info("ApplicationContext: injecting entity manager on: " + sourceObject.toString());
             }
         }
     }

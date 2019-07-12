@@ -2,9 +2,11 @@ package pl.insert.config;
 
 import org.junit.Before;
 import org.junit.Test;
-import pl.insert.dao.EmployeesDao;
+import pl.insert.dao.EmployeeDao;
 import pl.insert.services.EmployeeService;
 import pl.insert.spring.context.ApplicationContext;
+
+import javax.persistence.EntityManager;
 
 import static org.junit.Assert.*;
 
@@ -30,10 +32,10 @@ public class ApplicationContextTest {
     @Test
     public void getEmployeeDaoBean() {
 
-        EmployeesDao employeesDao = context.getBean("employeesDao", EmployeesDao.class);
+        EmployeeDao employeeDao = context.getBean("employeeDao", EmployeeDao.class);
 
-        System.out.println(employeesDao);
+        System.out.println(employeeDao);
 
-        assertNotNull(employeesDao);
+        assertNotNull(employeeDao);
     }
 }

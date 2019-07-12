@@ -1,8 +1,8 @@
 package pl.insert.old.proxy_pattern;
 
-import pl.insert.dao.EmployeesDao;
-import pl.insert.dao.EmployeesDaoImpl;
-import pl.insert.spring.dynamic_proxy_pattern.EntityManagerHolder;
+import pl.insert.dao.EmployeeDao;
+import pl.insert.dao.EmployeeDaoImpl;
+import pl.insert.spring.dynamicproxypattern.EntityManagerHolder;
 import pl.insert.model.Employee;
 
 import javax.persistence.EntityManager;
@@ -11,14 +11,14 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.List;
 
-public class EmployeesDaoProxy implements EmployeesDao {
+public class EmployeeDaoProxy implements EmployeeDao {
 
     private EntityManagerFactory emf;
-    private EmployeesDaoImpl employeesDaoImpl;
+    private EmployeeDaoImpl employeesDaoImpl;
 
-    public EmployeesDaoProxy() {
+    public EmployeeDaoProxy() {
         emf = Persistence.createEntityManagerFactory("pl.insert.example");
-        employeesDaoImpl = new EmployeesDaoImpl();
+        employeesDaoImpl = new EmployeeDaoImpl();
     }
 
     @Override

@@ -4,7 +4,7 @@ import pl.insert.model.Employee;
 
 import java.util.List;
 
-public interface EmployeesDao {
+public interface EmployeeDao {
 
     List<Employee> getEmployeeList();
 

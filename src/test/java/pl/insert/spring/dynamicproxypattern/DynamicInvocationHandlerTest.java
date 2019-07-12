@@ -1,10 +1,9 @@
-package pl.insert.spring.dynamic_proxy_pattern;
+package pl.insert.spring.dynamicproxypattern;
 
 import org.junit.Before;
 import org.junit.Test;
 import pl.insert.config.MyConfiguration;
-import pl.insert.dao.EmployeesDao;
-import pl.insert.dao.EmployeesDaoImpl;
+import pl.insert.dao.EmployeeDao;
 import pl.insert.model.Employee;
 import pl.insert.spring.context.ApplicationContext;
 
@@ -13,19 +12,19 @@ import java.util.List;
 
 public class DynamicInvocationHandlerTest {
 
-    private EmployeesDao employeesDao;
+    private EmployeeDao employeeDao;
 
     @Before
     public void setUp() {
         ApplicationContext context = new ApplicationContext(MyConfiguration.class);
 
-        employeesDao = context.getBean("employeesDao", EmployeesDao.class);
+        employeeDao = context.getBean("employeeDao", EmployeeDao.class);
     }
 
     @Test
     public void testGetEmployeeList() {
 
-        List<Employee> employeeList = employeesDao.getEmployeeList();
+        List<Employee> employeeList = employeeDao.getEmployeeList();
 
         for (Employee employee : employeeList) {
             System.out.println(employee);
@@ -35,7 +34,7 @@ public class DynamicInvocationHandlerTest {
     @Test
     public void testGetEmployeeById() {
 
-        Employee employee = employeesDao.getEmployeeById(1L);
+        Employee employee = employeeDao.getEmployeeById(1L);
 
         System.out.println(employee);
     }
@@ -50,19 +49,19 @@ public class DynamicInvocationHandlerTest {
         employee.setJoinedOn(new Date());
         employee.setSalary(6000L);
 
-        employeesDao.insertEmployee(employee);
+        employeeDao.insertEmployee(employee);
     }
 
     @Test
     public void testDeleteEmployee() {
 
-        employeesDao.deleteEmployee(23L);
+        employeeDao.deleteEmployee(25L);
     }
 
     @Test
     public void testObjectMethods() {
 
-        int i = employeesDao.hashCode();
+        int i = employeeDao.hashCode();
 
         System.out.println(i);
     }

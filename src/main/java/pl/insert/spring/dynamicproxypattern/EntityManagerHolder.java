@@ -1,4 +1,4 @@
-package pl.insert.spring.dynamic_proxy_pattern;
+package pl.insert.spring.dynamicproxypattern;
 
 import javax.persistence.EntityManager;
 
